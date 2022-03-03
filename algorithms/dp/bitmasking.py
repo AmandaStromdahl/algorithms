@@ -93,7 +93,7 @@ Determines the nr of ways to assign unique caps to every person using bitmasking
 :param capSets: A nested list containing the caps of every person. 
 :returns: The nr of ways to select unique caps for every person.
 """
-def countUniqueWays(capsSets: list, nbCaps: int) -> int:
+def assign_unique_caps(capsSets: list, nbCaps: int) -> int:
 
     nbPeople, caps, DP = initialization(capsSets, nbCaps)
     
@@ -103,7 +103,7 @@ def countUniqueWays(capsSets: list, nbCaps: int) -> int:
 def main():
     caps = [[1,2,3], [4], [1,2]]
     nbCaps = 4
-    print(countUniqueWays(caps, nbCaps))
-    
+    print(assign_unique_caps(caps, nbCaps))
+
 if __name__ == '__main__':
     main()
