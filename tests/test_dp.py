@@ -29,7 +29,8 @@ class TestBitmasking(unittest.TestCase):
     # === Relates to requirement R1 "No cap sets" ===
     # Checks that the output is 0 when there are no people in the set, (and thus no cap sets).
     def test_no_cap_sets(self):
-        self.assertEquals(assign_unique_caps([],0), 0)
+        with self.assertRaises(ValueError):
+            assign_unique_caps([],0)
 
     # === Relates to requirement R2 "Person without caps" ===
     # Checks that the output is 0 when there is one or more empty cap sets. This means there is 
