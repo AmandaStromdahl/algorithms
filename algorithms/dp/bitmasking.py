@@ -48,7 +48,8 @@ def initialization(capsSets: list, nbCaps: int):
     return nbPeople, caps, DP
 
 """
-Count the number of satisfying arrangement from cap_id to last cap
+Determines the nr of ways to assign unique caps to current people wearing status
+(i.e. current mask) having caps from cap_id to last cap to assign (or not)
 
 :param nbPeople: The number of people
 :param nbCaps: The number of caps
@@ -58,7 +59,7 @@ Count the number of satisfying arrangement from cap_id to last cap
 :param cap_id: The current cap
 :returns: The number of unique ways to assign unique caps
 """
-def countUniqueWaysFrom(nbPeople, nbCaps, caps, DP, mask, cap_id):
+def assign_unique_caps_from(nbPeople, nbCaps, caps, DP, mask, cap_id):
     
     # if the mask is full, then we found a satisfying arrangement
     if mask == (1 << nbPeople) - 1:
@@ -73,14 +74,14 @@ def countUniqueWaysFrom(nbPeople, nbCaps, caps, DP, mask, cap_id):
         return DP[mask][cap_id]
 
     # count the unique ways without taking current cap into account
-    nbUniqueWays = countUniqueWaysFrom(nbPeople, nbCaps, caps, DP, mask, cap_id + 1)
+    nbUniqueWays = assign_unique_caps_from(nbPeople, nbCaps, caps, DP, mask, cap_id + 1)
 
     if cap_id in caps:
         for person in caps[cap_id]:
             # check if the person is not already wearing a cap
             if not (mask & (1 << person)):
                 # count the unique ways if the person wears the current cap
-                nbUniqueWays += countUniqueWaysFrom(nbPeople, nbCaps, caps, DP, mask | (1 << person), cap_id + 1)
+                nbUniqueWays += assign_unique_caps_from(nbPeople, nbCaps, caps, DP, mask | (1 << person), cap_id + 1)
 
     # store the result in the DP matrix
     DP[mask][cap_id] = nbUniqueWays
@@ -97,7 +98,7 @@ def assign_unique_caps(capsSets: list, nbCaps: int) -> int:
 
     nbPeople, caps, DP = initialization(capsSets, nbCaps)
     
-    return countUniqueWaysFrom(nbPeople, nbCaps, caps, DP, 0, 1)
+    return assign_unique_caps_from(nbPeople, nbCaps, caps, DP, 0, 1)
 
 # For debugging purposes
 def main():
