@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+MIN_NB_PEOPLE = 1
 MAX_NB_PEOPLE = 10
 
 """
@@ -9,9 +10,9 @@ Check that the given caps sets is valid
 :param nbCaps: The number of caps
 :returns: Nothing but raises errors if invalid caps sets
 """
-def checkArgument(capsSets: list, nbCaps: int):
-    if len(capsSets) > MAX_NB_PEOPLE:
-        raise ValueError(f'The maximum number of people is {MAX_NB_PEOPLE}, but you gave {len(capsSets)} people !')
+def check_argument(capsSets: list, nbCaps: int):
+    if len(capsSets) < MIN_NB_PEOPLE or len(capsSets) > MAX_NB_PEOPLE:
+        raise ValueError(f'The number of people should be {MIN_NB_PEOPLE} <= n <= {MAX_NB_PEOPLE}, but you gave {len(capsSets)} people !')
     for capsSet in capsSets:
         if not isinstance(capsSet, list):
             raise ValueError(f'The given caps set {capsSet} is not valid !')
@@ -31,7 +32,7 @@ Initialize the variables
 def initialization(capsSets: list, nbCaps: int):
 
     # check if the arguments are valid
-    checkArgument(capsSets, nbCaps)
+    check_argument(capsSets, nbCaps)
 
     nbPeople = len(capsSets)
     nbMasks = 2 ** nbPeople
