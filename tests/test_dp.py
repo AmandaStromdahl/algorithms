@@ -143,11 +143,40 @@ class TestBitmaskingTSP(unittest.TestCase):
         with self.assertRaises(ValueError):
             tsp(nodes, nbRow, nbColumn)
         
-    # === Relates to requirement R2.4 "No solution" ===
-    # Checks that the output is inf when there is at least one unreachable node 
-    def test_no_solution(self):
-        # TODO
-        pass
+    # === Relates to requirement R2.6 "Wrong collection type" ===
+    # Checks that a value error is raised when the collection of nodes is of the wrong type.
+    def test_wrong_collection_type(self):
+        nodes = [
+            {'.', '.', '.', '.', '.', '.', '*'}
+        ]
+        nbRow = 1
+        nbColumn = 7
+        with self.assertRaises(ValueError):
+            tsp(nodes, nbRow, nbColumn)
+    
+    # === Relates to requirement R2.7 "Wrong node type" ===
+    # Checks that a value error is raised when a node is of the wrong type.
+    def test_wrong_node_type(self):
+        nodes = [
+            ['.', '.', '.', '.', '.', 'X', '*']
+        ]
+        nbRow = 1
+        nbColumn = 7
+        with self.assertRaises(ValueError):
+            tsp(nodes, nbRow, nbColumn)
+
+    # === Relates to requirement R2.8 "Too many houses" ===
+    # Checks that a value error is raised when too many houses are provided.
+    def test_too_many_houses(self):
+        nodes = [
+            ['*', '*', '*', '*', '*', '*', '*'],
+            ['*', '*', '*', '*', '*', '*', '*']
+        ]
+        nbRow = 2
+        nbColumn = 7
+        with self.assertRaises(ValueError):
+            tsp(nodes, nbRow, nbColumn)
+    
         
 class TestBuySellStock(unittest.TestCase):
     def test_max_profit_naive(self):

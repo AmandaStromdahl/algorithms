@@ -73,6 +73,12 @@ Each of the following requirements will be linked to new tests, since no tests r
 | R2.3 |             Positive path length              | If there are at least two nodes that are >0 length units apart, the output should be a number >0 that corresponds to the length of the shortest Euler circuit. |
 | R2.4 |                  No solution                  |                                  If the nr of nodes is >1 and there is at least one node that cannot be reached from any other node, the output should be inf. |
 | R2.5 |               Faulty dimensions               |                                              If the dimensions of the given graph don't correspond to the dimension parameters, a ValueError should be raised. |
+| R2.6 |                Wrong collection type          |                                                    If the collection of nodes is not a list a ValueError should be raised.
+| 
+| R2.7 |                Wrong node type                |                                                   If a node in the collection is of the wrong type a ValueError should be raised.
+| 
+| R2.8 |               Too many houses                 |                                                   Checks that a value error is raised if too many houses are allocated in the input matrix. 
+| 
 
 
 ## Algorithm description
