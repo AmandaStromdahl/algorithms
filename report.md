@@ -87,14 +87,14 @@ To solve this problem, we will use bitmasking and dynamic programming. Bitmaskin
 
 In our case, bitmasking will be used to represent whether a person is wearing a hat. In other words, a _i-th_ bit set to 1 means that the _i-th_ person is wearing a hat. Therefore the final cases we're interested into are the ones when the mask is completely full, i.e. all bits are set to 1.
 
-Let's have a look on the dynamic programming formula. The table storing the intermediate results is a $M\times N$ matrix where:
+Let's have a look on the dynamic programming formula. The table storing the intermediate results is a ![M\times N](http://latex.codecogs.com/svg.latex?M%5ctimes%20N) matrix where:
 
-- $M$ is the total number of masks, which is equal to $2^n$ where $n$ is the number of people
-- $N$ is the total number of hats
+- M is the total number of masks, which is equal to ![\2^{n}](http://latex.codecogs.com/svg.latex?2%5e%7bn%7d) where n is the number of people
+- N is the total number of hats
 
 And so the formula goes as follow:
 
-`countWaysUntil(mask, k_hat) = countWaysUntil(mask, k_hat + 1) + `$\sum_{i=0}^{n}$` countWaysUntil(mask | (1 << i), k_hat + 1)`
+`countWaysUntil(mask, k_hat) = countWaysUntil(mask, k_hat + 1) + `![\sum_{i=0}^{n}](http://latex.codecogs.com/svg.latex?%5csum_%7bi%3d0%7d%5e%7bn%7d)` countWaysUntil(mask | (1 << i), k_hat + 1)`
 
 More specifically, this formula says that the number of ways satisfying the problem for a specific mask (i.e. hat wearing status of the people) and taking into account all hats from the _k-th_ one until hat $N$ is defined by the sum of
 
@@ -129,6 +129,7 @@ Concerning our issue, since it is related to a new algorithm, there are obviousl
 
 Hence we create the class that will allow us to test the new algorithm of our issue: 'class `TestBitmasking` in the file [test_dp.py](tests/test_dp.py). Each [requirement](TODO) will have its own method that test it inside this class.
 
+
 The first class [TestBitmaskingCapAssignment](tests/test_dp.py) tests the implementation of the bitmasking algorithm to solve the Cap Assignment problem. The test class has 8 associated requirements which covers aspects such as correct input types, edge cases and runtime correctness. The test class achieves 92% test coverage. After analyzing the functions for the Cap Assignment code with the code complexity tool Lizard we get the following results:
 
 | Function   |     Lizard CCN      |   Manual CCN     |
@@ -154,13 +155,14 @@ The second class [TestBitmaskingTSP](tests/test_dp.py) tests the implementation 
 
 The general complexity of most of these functions are also low. The main difference between the manually counted CCN and the CCN computed by Lizard is the fact that Lizard does not take exceptions into account. Thus we have a much higher complexity for the check_argument function when tested with Lizard than when it's analyzed manually.
 
-## UML class diagram and its description
+## UML for the Bitmasking algorithm
+Our solution consists of an algorithm that utilizes several functions. In order to gain a better understanding of the control flow of the algorithm the following control-flow diagram can be consulted. In this figure the boxes represent functions called and the diamonds represents major decision points. The filled dot represents the start and the circled dots represent the termination of the algorithm.
+
+
+![Alt Text](ControlFlow.png)
 
 ### Key changes/classes affected
-
-Optional (point 1): Architectural overview.
-
-Optional (point 2): relation to design pattern(s).
+The project is overall highly modular where each algorithm is contextually independent from the others. This holds true for our implementation of the bitmasking algorithm. Given that we did not introduce any new dependencies to the project the impact of our addition on the existing code base is minimal. The tests for the bitmasking algorithm are implemented using the same test framework as the existing tests and conforms to the overall design of the project.
 
 ## Overall experience
 
