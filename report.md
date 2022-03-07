@@ -78,22 +78,22 @@ And so the formula goes as follow:
 
 `countWaysUntil(mask, k_hat) = countWaysUntil(mask, k_hat + 1) + `![\sum_{i=0}^{n}](http://latex.codecogs.com/svg.latex?%5csum_%7bi%3d0%7d%5e%7bn%7d)` countWaysUntil(mask | (1 << i), k_hat + 1)`
 
-More specifically, this formula says that the number of ways satisfying the problem for a specific mask (i.e. hat wearing status of the people) and taking into account all hats from the _k-th_ one until hat $N$ is defined by the sum of
+More specifically, this formula says that the number of ways to satisfy the problem for a specific mask (i.e. hat wearing status of the people) and taking into account all hats from the _k-th_ one until hat N is defined by the sum of
 
-1. the number of ways satisfying the problem without taking the _k-th_ hat into account
-2. the sum of the number of ways satisfying the problem when each person, that have the _k-th_ hat in their collection and are not currently wearing a hat, wears it.
+1. the number of ways to satisfy the problem without taking the _k-th_ hat into account
+2. the sum of the number of ways to satisfy the problem when each person that has the _k-th_ hat in their collection and is not currently wearing a hat, wears it.
 
 Note that before the computation of the formula, we have to check three cases:
 
 1. if the mask is full, then it means that we found a way of satisfying the problem, hence we return 1
-2. if the hat index is bigger than the total number of hats, it means that there are no more hats left and we could not find a satisfying ways to the problem. Therefore we return 0
+2. if the hat index is bigger than the total number of hats, it means that there are no more hats left and we could not find a satisfying way to the problem. Therefore we return 0
 3. if the number of ways of the mask and the _k-th_ hat has already been computed, then we just return the result from the dynamic programming table/matrix
 
-Finally the result will be stored is the matrix cell `[0][1]`.
+Finally the result will be stored in the matrix cell `[0][1]`.
 
 ### TSP
 
-The same technique of bitmasking and dynamic programming can be utilized to solve the famous _Travelling Salesperson_ problem. Given a 2D grid containing a set of towns, we want to find the shortest route through all the towns that ends up in the same spot we started from. In our case we model the 2D grid using ascii characters in this way,
+The same technique of bitmasking and dynamic programming can be utilized to solve the famous _Travelling Salesperson_ problem. Given a 2D grid containing a set of towns, we want to find the shortest route through all the towns that ends up in the same spot as the one we started from. In our case we model the 2D grid using ascii characters in this way,
 
 ```
 .  .  .  .  .  *  .
@@ -113,60 +113,62 @@ We now construct the dynamic programming state `dp[index][mask]`.
 - `index` is the location of the current house.
 - `mask` tells us which of the houses that we have visited by set bits in the mask.
 
-Together `dp[index][mask]` tells us the minimum distance to visit X (X = number of set bits in mask) houses in a order such that the last visited house is at `index`
+Together `dp[index][mask]` tells us the minimum distance to visit X (X = number of set bits in mask) houses in an order such that the last visited house is at `index`.
 
 Then we have our state transition. Initially `dp[0][0]` means that we are at tile 0 and the mask states that we have visited 0 houses. The final state will be `dp[some index][LIMIT_MASK]` where `LIMIT_MASK = (1 << N) - 1` (N = number of houses). The relation is then,
 
 ```
-dp(curr_house)(curr_mask) = min(
-    for house: houses that hasn't been visited yet:
-       dp(house)(cur_mask.set_bit(house)) + dist[curr_house][house]
+dp(curr_house_index)(curr_mask) = min(
+    for index: houses that haven't been visited yet:
+       dp(index)(cur_mask.set_bit(index)) + dist[curr_house_index][index]
 )
 ```
 
 When the mask is `LIMIT_MASK` we know that all the houses have been visited, and we can add the distance from the last house to the initial position to our solution.
 
-### Requirements for the new feature or requirements affected by functionality being refactored
+### <a id="requirements"></a> Requirements for the new feature or requirements affected by functionality being refactored
 
-Each of the following requirements will be linked to new tests, since no tests related to the issue exist previously. The requirements named R1.x are related to the cap assignment problem, whereas the remaining requirments named R2.x concern the TSP implementation.
+Each of the following requirements will be linked to new tests, since no tests related to the issue exist previously. The requirements named R1.x are related to the cap assignment problem, whereas the remaining requirements named R2.x concern the TSP implementation.
 
-| ID   |               Title                |                                                                                                                              Description |
-| :--- | :--------------------------------: | ---------------------------------------------------------------------------------------------------------------------------------------: |
-| R1.1 |            No cap sets             |                                                                               If the nr of cap sets is 0, a ValueError should be raised. |
-| R1.2 |        Person without caps         |                                   If there is at least one person that doesn't have any caps, there should be 0 ways to assign the caps. |
-| R1.3 |      No unique cap assignment      |            Assume there are >0 people and at least one cap per person. If there is no unique assignment of caps, the output should be 0. |
-| R1.4 | One or more unique cap assignments | Assume there are >0 people and at least one cap per person. If there is at least one unique assignment of caps, the output should be >0. |
-| R1.5 |          Too many people           |                                                          If there are too many people (i.e. capSets) then a ValueError should be raised. |
-| R1.6 | Faulty CapIds | If any of the cap Ids are not given as an integer a ValueError should be raised.|
-| R1.7 | Faulty collection input | If the cap ids are given as another collection type than a list and error should be raised.|
-| R1.8 | CapId too low | If the provided maximum capId is lower than the highest given cap id this should raise a value error.|
-| R2.1 | No nodes | If the nr of nodes is 0, a ValueError should be raised. |
-| R2.2 | One node | If the nr of nodes is 1, the output should be 0. |
-| R2.3 | Positive path length | If there are at least two nodes that are >0 length units apart, the output should be a number >0 that corresponds to the length of the shortest Euler circuit. |
-| R2.4 | No solution | If the nr of nodes is >1 and there is at least one node that cannot be reached from any other node, the output should be inf. |
-| R2.5 | Faulty dimensions | If the dimensions of the given graph don't correspond to the dimension parameters, a ValueError should be raised. |
-| R2.6 | Wrong collection type | If the collection of nodes is not a list a ValueError should be raised.|
-| R2.7 | Wrong node type | If a node in the collection is of the wrong type a ValueError should be raised.|
-| R2.8 | Too many houses | Checks that a value error is raised if too many houses are allocated in the input matrix.|
+| ID   |               Title                |                                                                                                                                                    Description |
+| :--- | :--------------------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| R1.1 |            No cap sets             |                                                                                                     If the nr of cap sets is 0, a ValueError should be raised. |
+| R1.2 |        Person without caps         |                                                         If there is at least one person that doesn't have any caps, there should be 0 ways to assign the caps. |
+| R1.3 |      No unique cap assignment      |                                  Assume there are >0 people and at least one cap per person. If there is no unique assignment of caps, the output should be 0. |
+| R1.4 | One or more unique cap assignments |                       Assume there are >0 people and at least one cap per person. If there is at least one unique assignment of caps, the output should be >0. |
+| R1.5 |          Too many people           |                                                                                If there are too many people (i.e. capSets) then a ValueError should be raised. |
+| R1.6 |           Faulty CapIds            |                                                                               If any of the cap Ids are not given as an integer a ValueError should be raised. |
+| R1.7 |      Faulty collection input       |                                                                    If the cap ids are given as another collection type than a list and error should be raised. |
+| R1.8 |           CapId too low            |                                                          If the provided maximum capId is lower than the highest given cap id this should raise a value error. |
+| R2.1 |              No nodes              |                                                                                                        If the nr of nodes is 0, a ValueError should be raised. |
+| R2.2 |              One node              |                                                                                                               If the nr of nodes is 1, the output should be 0. |
+| R2.3 |        Positive path length        | If there are at least two nodes that are >0 length units apart, the output should be a number >0 that corresponds to the length of the shortest Euler circuit. |
+| R2.4 |            No solution             |                                  If the nr of nodes is >1 and there is at least one node that cannot be reached from any other node, the output should be inf. |
+| R2.5 |         Faulty dimensions          |                                              If the dimensions of the given graph don't correspond to the dimension parameters, a ValueError should be raised. |
+| R2.6 |       Wrong collection type        |                                                                                        If the collection of nodes is not a list a ValueError should be raised. |
+| R2.7 |          Wrong node type           |                                                                                If a node in the collection is of the wrong type a ValueError should be raised. |
+| R2.8 |          Too many houses           |                                                                      Checks that a value error is raised if too many houses are allocated in the input matrix. |
 
 ## Code changes
 
 ### Implementation of Cap Assigning Problem
 
-To implement this algorithm, we simply started with the main method and implementing all other methods as we needed:
-- `assign_unique_caps()` This is the main method that someone will call to solve the problem given the caps sets and the number. This method will firstly initialize the necessary data calling the `initialization()` function and then actually start the algorithm calling the method `assign_unique_caps_from()` with the appropriate arguments. The implementation was pretty straightforward since we're just calling two methods and doing nothing else.
-- `initialization()` This method computes the necessary data such as the number of people, the cap dictionary and the DP matrix. But it first starts by checking that the given caps sets are valid calling the `check_argument()` method. Computing the number of people was trivial, then filling in the cap dictionary consisted of just reading the caps sets and finally the DP matrix was initializes with a size of the number of distinct caps + 1 times the number of masks and filled in with the value -1.
-- `check_argument()` This method check that the given caps sets are valid based on the [requirements](#requirements) so it was straightforward.
-- `assign_unique_caps_from()` This method the main method of the DP algorithm. It implements the algorithm defined [here](#description).
+To implement this algorithm, we simply started with the main method and implemented all other methods as we needed:
 
-The overall implementation of this algorithm was clear. We did not encountered some huge bugs or problems when coding it.
+- `assign_unique_caps()` This is the main method that someone will call to solve the problem given the cap sets and the number of distinct caps. This method will firstly initialize the necessary data by calling the `initialization()` function, and then begin the actual algorithm by calling the method `assign_unique_caps_from()` with the appropriate arguments. The implementation was pretty straightforward since we're just calling two methods and not doing anything else.
+- `initialization()` This method computes the necessary data such as the number of people, the cap dictionary and the DP matrix. t first starts by checking that the given caps sets are valid by calling the `check_argument()` method. Computing the number of people is trivial, and filling in the cap dictionary consists of just reading the cap sets, and finally, the DP matrix is initialized with a size of the number of distinct caps + 1 times the number of masks and filled in with the value -1.
+- `check_argument()` This method checks that the given cap sets are valid based on the [requirements](#requirements), so it is pretty straightforward.
+- `assign_unique_caps_from()` This method is the main method of the DP algorithm. It implements the algorithm defined [here](#description).
+
+The overall implementation of this algorithm was clear. We did not encounter any large bugs or problems.
 
 ### Implementation of Travelling Salesman Problem
 
 To implement this second algoritm, we used the same structure as the first one, that means that we started with the main method and implemented the auxiliary functions as needed.
+
 - `tsp()` This is the main method that we will call to solve the problem given the nodes, the number of rows and the number of columns. The implementation of this method was trivial, as for the first algorithm, we firstly initialize the necessary data using the method `initialization()` and start the the algorithm itself by calling the method `find_shortest_path()`.
 
-- `initialization()` As for the first algorithm, this method computes the necessary data such as the houses location, the DP matrix and all the distances in the grid. But we firstly need to start by checking the arguments using the method `check_argument()`. Then finding the houses in straightforward, we just need to find the "*" in the grid. The DP matrix is defined with a size of the number of masks times the number of houses and filled in with the value -1. We then computed all the distances by calling the method `getAllDist()`. We finally return the computed values.
+- `initialization()` As for the first algorithm, this method computes the necessary data such as the houses location, the DP matrix and all the distances in the grid. But we firstly need to start by checking the arguments using the method `check_argument()`. Then finding the houses in straightforward, we just need to find the "\*" in the grid. The DP matrix is defined with a size of the number of masks times the number of houses and filled in with the value -1. We then computed all the distances by calling the method `getAllDist()`. We finally return the computed values.
 
 - `check_argument()` This method as exactly the same purpose as for the first algorithm, that means that it checks the nodes based on the [requirements](#requirements) so it was also trivial.
 
@@ -196,7 +198,7 @@ The repository has initially a [complete folder](tests/) dedicated to the tests,
 
 Concerning our issue, since it is related to a new algorithm, there are obviously no tests about it. However, we can still have a look on the [tests folder](tests/). We notice that the tests are divided into files, each of which represents a specific algorithms field where the algorithms are separated in the [algorithms folder](algorithms/). For instance, all algorithms related to [graph](algorithms/graph/) are tested in the file [test_graph.py](tests/test_graph.py). Inside one of these test files, the tests are divided into classes, each representing the test class for a specific algorithm. For example, in the test file [test_graph.py](tests/test_graph.py), one of the class is `class TestTarjan` that contains multiple tests for the [_Tarjan's algorithm_](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm).
 
-Hence we create the class that will allow us to test the new algorithm of our issue: 'class `TestBitmasking` in the file [test_dp.py](tests/test_dp.py). Each [requirement](TODO) will have its own method that test it inside this class.
+Hence we create the class that will allow us to test the new algorithm of our issue: 'class `TestBitmasking` in the file [test_dp.py](tests/test_dp.py). Each [requirement](#requirements) will have its own method that test it inside this class.
 
 ## UML for the Bitmasking algorithms
 
@@ -227,9 +229,9 @@ The second class [TestBitmaskingTSP](tests/test_dp.py) tests the implementation 
 
 The general complexity of most of these functions are also low. The main difference between the manually counted CCN and the CCN computed by Lizard is the fact that Lizard does not take exceptions into account. Thus we have a much higher complexity for the check_argument function when tested with Lizard than when it's analyzed manually.
 
-| UML for the cap counting problem. | UML for TSP |
-| :-------------------------------- | :---------- |
-![Alt Text](ControlFlow.png) | ![Alt Text](TSP_UML.png) |
+| UML for the cap counting problem. | UML for TSP              |
+| :-------------------------------- | :----------------------- |
+| ![Alt Text](ControlFlow.png)      | ![Alt Text](TSP_UML.png) |
 
 ### Key changes/classes affected
 
